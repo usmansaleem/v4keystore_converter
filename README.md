@@ -35,3 +35,13 @@ Similarly, to convert the test vectors to scrypt with `n=128`, the usage would b
 --password-path=./testvectors/passwords \
 --kdf-function=SCRYPT -n=128"
 ```
+
+The output would look like:
+```
+[main] INFO Main - Reading .json paths from ./testvectors/keys
+[main] INFO Main - Reading password(s) from ./testvectors/passwords
+[main] INFO Main - Decrypting keystores ...
+[main] INFO Main - Time taken: 1.065 s
+[main] INFO Main - Converting keystores ...
+[main] INFO Main - Done. Total Time taken: 1.089 s
+```
