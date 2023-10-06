@@ -1,5 +1,6 @@
 package net.usmans;
 
+import com.google.common.base.Stopwatch;
 import org.apache.tuweni.bytes.Bytes;
 import org.apache.tuweni.bytes.Bytes32;
 import org.slf4j.Logger;
@@ -11,7 +12,6 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 import tech.pegasys.teku.bls.keystore.KeyStore;
 import tech.pegasys.teku.bls.keystore.KeyStoreLoader;
-import tech.pegasys.teku.bls.keystore.KeyStoreValidationException;
 import tech.pegasys.teku.bls.keystore.model.Cipher;
 import tech.pegasys.teku.bls.keystore.model.CipherFunction;
 import tech.pegasys.teku.bls.keystore.model.KdfFunction;
@@ -110,10 +110,9 @@ public class V4keystore_converterMain implements Callable<Integer> {
                 throw new ParameterException(spec.commandLine(), "-r must be a positive integer.");
             }
         }
-
-        final SecureRandom secureRandom = new SecureRandom();
-
-        // iterate the source folder and then decrypt the files in parallel
+        final Stopwatch stopwatch = Stopwatch.createStarted();
+        // iterate the source folder and obtain all the keystore paths. Files.list does not provide parallel stream.
+        LOG.info("Reading .json paths from {}", source);
         List<Path> srcPaths;
         try (Stream<Path> srcFiles = Files.list(source)) {
             srcPaths = srcFiles.filter(Files::isRegularFile)
@@ -124,16 +123,27 @@ public class V4keystore_converterMain implements Callable<Integer> {
         }
 
         // associate passwords with the v4 keystores
-        LOG.info("Reading passwords ...");
-        Map<Path, String> passwordMap = getPasswords(srcPaths, passwordPath);
+        LOG.info("Reading password(s) from {}", passwordPath);
+        final Map<Path, String> passwordMap = getPasswords(srcPaths, passwordPath);
 
-        LOG.info("Converting v4 keystore files ...");
-        srcPaths.parallelStream().filter(passwordMap::containsKey).forEach(path -> {
+        LOG.info("Decrypting keystores ...");
+        final Map<Path, KeyStoreRecord> decryptedKeystores = passwordMap.entrySet().parallelStream().map(entry -> {
+                    try {
+                        final KeyStoreData keyStoreData = KeyStoreLoader.loadFromFile(entry.getKey().toUri());
+                        final Bytes privateKey = KeyStore.decrypt(entry.getValue(), keyStoreData);
+                        return Map.entry(entry.getKey(), new KeyStoreRecord(keyStoreData, privateKey, entry.getValue()));
+                    } catch (final RuntimeException e) {
+                        LOG.error("Error decrypting keystore: {}", e.getMessage());
+                        return null;
+                    }
+                }).filter(Objects::nonNull)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        LOG.info("Time taken: {}", stopwatch);
+
+        LOG.info("Converting keystores ...");
+        final SecureRandom secureRandom = new SecureRandom();
+        decryptedKeystores.entrySet().parallelStream().forEach(entry -> {
             try {
-                final KeyStoreData keyStoreData = KeyStoreLoader.loadFromFile(path.toUri());
-                final Bytes privateKey = KeyStore.decrypt(passwordMap.get(path), keyStoreData);
-
-                // convert
                 final KdfParam kdfParam;
                 if (kdfFunction == KdfFunction.PBKDF2) {
                     kdfParam =
@@ -144,17 +154,15 @@ public class V4keystore_converterMain implements Callable<Integer> {
                 }
 
                 final Cipher cipher = new Cipher(CipherFunction.AES_128_CTR, Bytes.random(16, secureRandom));
-                final KeyStoreData encrypted = KeyStore.encrypt(privateKey, keyStoreData.getPubkey(), passwordMap.get(path), keyStoreData.getPath(), kdfParam, cipher);
+                final KeyStoreData encrypted = KeyStore.encrypt(entry.getValue().privateKey(), entry.getValue().keyStoreData().getPubkey(), entry.getValue().password(), entry.getValue().keyStoreData().getPath(), kdfParam, cipher);
 
-                KeyStoreLoader.saveToFile(destination.resolve(path.getFileName()), encrypted);
-            } catch (KeyStoreValidationException exception) {
-                LOG.error("Error parsing v4 keystore: {}", exception.getMessage());
-            } catch (IOException e) {
-                LOG.error("Error saving v4 keystore: {}", e.getMessage());
+                KeyStoreLoader.saveToFile(destination.resolve(entry.getKey().getFileName()), encrypted);
+            } catch (RuntimeException | IOException e) {
+                LOG.error("Error converting keystores {}", e.getMessage());
             }
         });
 
-        LOG.info("Done");
+        LOG.info("Done. Total Time taken: {}", stopwatch);
 
         // encrypt using supplied function
         return 0;

@@ -1,13 +1,14 @@
 package net.usmans;
 
-import rife.bld.BaseProject;
+import rife.bld.Project;
 import rife.bld.dependencies.Scope;
 
 import java.util.List;
+import java.util.jar.Attributes;
 
 import static rife.bld.dependencies.Repository.MAVEN_CENTRAL;
 
-public class V4keystore_converterBuild extends BaseProject {
+public class V4keystore_converterBuild extends Project {
     public V4keystore_converterBuild() {
         pkg = "net.usmans";
         name = "V4keystore_converter";
@@ -15,6 +16,7 @@ public class V4keystore_converterBuild extends BaseProject {
         version = version(0, 1, 0);
 
         downloadSources = true;
+        autoDownloadPurge = true;
         repositories = List.of(MAVEN_CENTRAL);
         scope(Scope.compile)
                 .include(dependency("info.picocli", "picocli", version(4, 7, 5)))
@@ -28,7 +30,7 @@ public class V4keystore_converterBuild extends BaseProject {
                 .include(dependency("org.bouncycastle", "bcpkix-jdk18on", version(1, 74)))
                 .include(dependency("org.slf4j", "slf4j-simple", version(2, 0, 9)));
 
-
+        jarOperation().manifestAttribute(Attributes.Name.MAIN_CLASS, mainClass());
 
         testOperation().mainClass("net.usmans.V4keystore_converterTest");
     }
