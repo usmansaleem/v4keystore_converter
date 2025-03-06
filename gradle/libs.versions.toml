@@ -1,0 +1,30 @@
+# https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
+
+[versions]
+guava = "33.0.0-jre"
+junit-jupiter = "5.10.2"
+picocli = "4.7.5"
+jackson = "2.15.2"
+bouncycastle = "1.80"
+tuweni = "2.4.2"
+spotless = "7.0.2"
+progressbar = "0.10.0"
+jgitver = "0.10.0-rc03"
+assertj = "3.27.3"
+teku = "25.2.0"
+
+
+[libraries]
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+picocli = { module = "info.picocli:picocli", version.ref = "picocli" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+bcprov-jdk18on = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
+tuweni-bytes = { module = "io.tmio:tuweni-bytes", version.ref = "tuweni" }
+progressbar = { module = "me.tongfei:progressbar", version.ref = "progressbar" }
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+teku-bls = {module = "tech.pegasys.teku.internal:bls", version.ref = "teku" }
+
+[plugins]
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+jgitver = { id = "fr.brouillard.oss.gradle.jgitver", version.ref = "jgitver" }
