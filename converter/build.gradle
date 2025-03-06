@@ -1,0 +1,83 @@
+plugins {
+    // Apply the application plugin to add support for building a CLI application in Java.
+    id 'application'
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.jgitver)
+}
+
+repositories {
+    // Use Maven Central for resolving dependencies.
+    mavenCentral()
+
+    // Teku dependencies
+    maven { url "https://artifacts.consensys.net/public/teku/maven/" }
+    maven { url "https://artifacts.consensys.net/public/maven/maven/" }
+}
+
+dependencies {
+    // This dependency is used by the application.
+    implementation libs.guava
+    implementation libs.picocli
+    implementation libs.jackson.databind
+    implementation libs.bcprov.jdk18on
+    implementation libs.tuweni.bytes
+    implementation libs.progressbar
+
+    // Use JUnit Jupiter for testing.
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // other test dependencies
+    testImplementation libs.assertj
+    testImplementation libs.teku.bls
+    testImplementation(variantOf(libs.teku.bls) {classifier("test-fixtures")})
+
+}
+
+// Apply a specific Java toolchain to ease working on different environments.
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+application {
+    // Define the main class for the application.
+    mainClass = 'net.usmans.V4keystore_converterMain'
+}
+
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}
+
+tasks.distTar {
+    // change the compression format
+   compression = Compression.GZIP
+   archiveExtension.set("tar.gz")
+}
+
+distributions {
+    main {
+        contents {
+            // Add the license file to the distribution.
+            from(rootProject.file("LICENSE-APACHE-2.0")) {into(".")}
+            from(rootProject.file("LICENSE-MIT")) {into(".")}
+        }
+    }
+}
+
+spotless {
+    java {
+        // Use the default importOrder configuration
+        importOrder()
+        removeUnusedImports()
+        // Choose one of these formatters.
+        googleJavaFormat()
+        formatAnnotations()
+
+        licenseHeaderFile(rootProject.layout.projectDirectory.file('gradle/spotless/java.license.template'))
+    }
+}
+
+jgitver { nonQualifierBranches = "main,master" }
