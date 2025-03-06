@@ -32,6 +32,9 @@ jobs:
       - name: Build
         run: ./gradlew clean build
 
+      - name: Project Version
+        run: ./gradlew version
+
       - name: Assemble distribution
         run: ./gradlew assembleDist
 
