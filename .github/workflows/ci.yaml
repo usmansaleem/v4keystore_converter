@@ -20,6 +20,8 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
+      - run: git fetch --tags --force origin #workaround https://github.com/actions/checkout/issues/882
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4.2.1
         with:
