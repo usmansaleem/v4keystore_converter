@@ -1,4 +1,4 @@
-![Build Status](https://github.com/usmansaleem/v4keystore_converter/actions/workflows/ci.yaml/badge.svg)
+[![Build Status](https://github.com/usmansaleem/v4keystore_converter/actions/workflows/ci.yaml/badge.svg)](https://github.com/usmansaleem/v4keystore_converter/actions?query=workflow%3A"CI")
 
 # BLS12-381 v4 Keystore converter
 
