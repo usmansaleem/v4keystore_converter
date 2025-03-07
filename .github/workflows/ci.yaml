@@ -39,7 +39,7 @@ jobs:
         run: |
           # Project Version
           output=$(./gradlew -q version)
-          project_version=$(echo "$output" | grep -oP 'Version: \K.*')
+          project_version=$(echo "$output" | grep 'Version:' | awk '{print $2}')
           echo "project_version=$project_version" >> "$GITHUB_OUTPUT"
 
       - name: Print Project Version
