@@ -39,7 +39,6 @@ jobs:
         run: |
           output=$(./gradlew -q version)
           project-version=$(echo "$output" | grep -oP 'Version: \K.*')
-          echo "project-version=$project-version"
           echo "project-version=$project-version" >> $GITHUB_OUTPUT
 
       - name: Assemble distribution (Release)
