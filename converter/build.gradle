@@ -57,6 +57,12 @@ tasks.distTar {
    archiveExtension.set("tar.gz")
 }
 
+tasks.jar {
+    doFirst {
+        manifest.attributes 'Implementation-Version': "${project.version}"
+    }
+}
+
 distributions {
     main {
         contents {

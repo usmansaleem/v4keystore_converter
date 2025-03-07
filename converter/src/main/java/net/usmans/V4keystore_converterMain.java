@@ -38,7 +38,7 @@ import tech.pegasys.teku.bls.keystore.model.SCryptParam;
 @Command(
     name = "converter",
     mixinStandardHelpOptions = true,
-    version = "0.2.0",
+    versionProvider = PicoCliVersionProvider.class,
     description = "Convert KDF function parameters of BLS V4 keystores",
     sortOptions = false,
     sortSynopsis = false)
