@@ -1,5 +1,5 @@
-![Build Status]
-(https://github.com/usmansaleem/v4keystore_converter/actions/workflows/ci.yaml/badge.svg)
+![Build Status](https://github.com/usmansaleem/v4keystore_converter/actions/workflows/ci.yaml/badge.svg)
+
 # BLS12-381 v4 Keystore converter
 
 Converts BLS12-381 v4 keystore's kdf function parameters.
