@@ -35,17 +35,36 @@ jobs:
         run: ./gradlew clean build
 
       - name: Project Version
-        run: ./gradlew version
+        id: project-version
+        run: |
+          output=$(./gradlew -q version)
+          project-version=$(echo "$output" | grep -oP 'Version: \K.*')
+          echo "project-version=$project-version"
+          echo "project-version=$project-version" >> $GITHUB_OUTPUT
 
-      - name: Assemble distribution for release
+      - name: Assemble distribution (Release)
         if: startsWith(github.ref, 'refs/tags/')
         run: ./gradlew assembleDist
 
-      - name: Upload distribution artifacts for release
-        uses: actions/upload-artifact@v4
+      - name: Generate Checksum (Release)
+        if: startsWith(github.ref, 'refs/tags/')
+        working-directory: ./converter/build/distributions
+        run: |
+          shasum -a 256 "converter-${{ steps.project-version.outputs.project-version }}.tar.gz" > "converter-${{ steps.project-version.outputs.project-version }}.tar.gz.sha256"
+          shasum -a 256 "converter-${{ steps.project-version.outputs.project-version }}.zip" > "converter-${{ steps.project-version.outputs.project-version }}.zip.sha256"  
+
+      - name: Release
+        id: release
+        uses: softprops/action-gh-release@v2.2.1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: distribution
-          path: converter/build/distributions/
-          retention-days: 1
-          if-no-files-found: error
+          files: |
+            converter/build/distributions/converter-${{ steps.project-version.outputs.project-version }}.tar.gz
+            converter/build/distributions/converter-${{ steps.project-version.outputs.project-version }}.tar.gz.sha256
+            converter/build/distributions/converter-${{ steps.project-version.outputs.project-version }}.zip
+            converter/build/distributions/converter-${{ steps.project-version.outputs.project-version }}.zip.sha256
+          body: |
+            ** V4 Keystore Converter Release **
+          draft: true
+          preserve_order: true
+          generate_release_notes: true
