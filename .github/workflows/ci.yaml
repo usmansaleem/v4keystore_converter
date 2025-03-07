@@ -92,8 +92,6 @@ jobs:
             converter/build/distributions/converter-${{ needs.build.outputs.publish_version }}.tar.gz.sha256
             converter/build/distributions/converter-${{ needs.build.outputs.publish_version }}.zip
             converter/build/distributions/converter-${{ needs.build.outputs.publish_version }}.zip.sha256
-          body: |
-            ** V4 Keystore Converter Release **
           draft: true
           preserve_order: true
           generate_release_notes: true
