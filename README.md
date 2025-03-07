@@ -1,3 +1,5 @@
+![Build Status]
+(https://github.com/usmansaleem/v4keystore_converter/actions/workflows/ci.yaml/badge.svg)
 # BLS12-381 v4 Keystore converter
 
 Converts BLS12-381 v4 keystore's kdf function parameters.
@@ -18,7 +20,7 @@ the decryption.
 The encryption/decryption code is based on [Teku](https://github.com/Consensys/teku/tree/master/infrastructure/bls-keystore)
 
 # Usage:
-To use this program, either build it from source or download the pre-built binaries from the [releases](TODO) pages. 
+To use this program, either build it from source or download the pre-built binaries from the [releases](https://github.com/usmansaleem/v4keystore_converter/releases/latest) pages. 
 This program requires Java 21 or higher to build and run. The gradle build will attempt to download and use appropriate 
 Java version if required.
 
@@ -30,7 +32,7 @@ cd v4keystore_converter
 cd ./converter/build/install/converter/bin
 ```
 ## Download pre-built binaries:
-TODO: Add download link
+Download pre-built binaries from the assets on the [releases](https://github.com/usmansaleem/v4keystore_converter/releases/latest)
 
 ```sh
 tar -xvzf ./converter-<version>.tar.gz
@@ -50,7 +52,7 @@ In this mode, the keystore files are stored in a directory as `<public-key>/keys
 subdirectory; while the password files are stored in a different directory as `<public-key>`, a regular file, without 
 any extension.
 
-Following is the minimal usage of the program, change the paths as per your requirements:
+Following is the minimal usage of the program, defaulting to WEB3SIGNER mode, change the paths as per your requirements:
 
 ```sh
 ./converter --src=<path>/keys/ \
@@ -84,7 +86,7 @@ PBKDF2 Options
                                function. Defaults to 1.
 SCRYPT Options
   -n=<INTEGER>               CPU/memory cost parameter. Required for SCRYPT kdf
-                               function. Defaults to 1.
+                               function. Defaults to 2.
   -p=<INTEGER>               Parallelization parameter. Required for SCRYPT kdf
                                function. Defaults to 1.
   -r=<INTEGER>               Block size parameter. Required for SCRYPT kdf
