@@ -6,7 +6,10 @@ import picocli.CommandLine;
 
 public class PicoCliVersionProvider implements CommandLine.IVersionProvider {
   @Override
-  public String[] getVersion() throws Exception {
-    return new String[] {PicoCliVersionProvider.class.getPackage().getImplementationVersion()};
+  public String[] getVersion() {
+    var implementationVersion =
+        PicoCliVersionProvider.class.getPackage().getImplementationVersion();
+    implementationVersion = implementationVersion == null ? "unknown" : implementationVersion;
+    return new String[] {implementationVersion};
   }
 }
