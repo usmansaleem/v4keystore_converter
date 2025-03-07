@@ -13,6 +13,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    outputs:
+      publish_version: ${{ steps.project_version.outputs.project_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -86,10 +88,10 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            converter/build/distributions/converter-${{ steps.project_version.outputs.project_version }}.tar.gz
-            converter/build/distributions/converter-${{ steps.project_version.outputs.project_version }}.tar.gz.sha256
-            converter/build/distributions/converter-${{ steps.project_version.outputs.project_version }}.zip
-            converter/build/distributions/converter-${{ steps.project_version.outputs.project_version }}.zip.sha256
+            converter/build/distributions/converter-${{ needs.build.outputs.publish_version }}.tar.gz
+            converter/build/distributions/converter-${{ needs.build.outputs.publish_version }}.tar.gz.sha256
+            converter/build/distributions/converter-${{ needs.build.outputs.publish_version }}.zip
+            converter/build/distributions/converter-${{ needs.build.outputs.publish_version }}.zip.sha256
           body: |
             ** V4 Keystore Converter Release **
           draft: true
