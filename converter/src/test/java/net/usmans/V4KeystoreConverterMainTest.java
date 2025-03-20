@@ -33,7 +33,7 @@ import tech.pegasys.teku.bls.keystore.model.Pbkdf2Param;
 import tech.pegasys.teku.bls.keystore.model.Pbkdf2PseudoRandomFunction;
 import tech.pegasys.teku.bls.keystore.model.SCryptParam;
 
-class V4keystore_converterMainTest {
+class V4KeystoreConverterMainTest {
 
   @TempDir static Path srcDir;
   @TempDir static Path passwordDir;
@@ -98,6 +98,14 @@ class V4keystore_converterMainTest {
             throw new RuntimeException(e);
           }
         });
+
+    // add deposit_data-xyz.json that should be ignored by the converter
+    try {
+      Files.writeString(
+          srcDir.resolve(BulkloadingMode.WEB3SIGNER.name()).resolve("deposit_data-123.json"), "{}");
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private static Queue<KdfParam> kdfParamQueue() {
@@ -132,6 +140,7 @@ class V4keystore_converterMainTest {
     assertThat(exitCode).isZero();
 
     Files.list(srcDir.resolve("WEB3SIGNER"))
+        .filter(file -> !file.getFileName().toString().startsWith("deposit_data"))
         .forEach(
             keystoreFile -> {
               // load converted keystore
