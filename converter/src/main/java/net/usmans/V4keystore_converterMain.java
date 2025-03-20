@@ -166,7 +166,8 @@ public class V4keystore_converterMain implements Callable<Integer> {
                 .filter(
                     path ->
                         Files.isRegularFile(path)
-                            && path.getFileName().toString().endsWith(".json"))
+                            && path.getFileName().toString().endsWith(".json")
+                            && !path.getFileName().toString().startsWith("deposit_data"))
                 .toList();
         case NIMBUS ->
             srcFiles.filter(Files::isDirectory).map(path -> path.resolve("keystore.json")).toList();
