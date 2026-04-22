@@ -10,8 +10,8 @@ repositories {
     mavenCentral()
 
     // Teku dependencies
-    maven { url "https://artifacts.consensys.net/public/teku/maven/" }
-    maven { url "https://artifacts.consensys.net/public/maven/maven/" }
+    maven { url = "https://artifacts.consensys.net/public/teku/maven/" }
+    maven { url = "https://artifacts.consensys.net/public/maven/maven/" }
 }
 
 dependencies {
@@ -57,9 +57,9 @@ tasks.distTar {
    archiveExtension.set("tar.gz")
 }
 
-tasks.jar {
-    doFirst {
-        manifest.attributes 'Implementation-Version': "${project.version}"
+tasks.named('jar', Jar) {
+    manifest {
+        attributes('Implementation-Version': project.version)
     }
 }
 
