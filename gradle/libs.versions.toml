@@ -9,7 +9,7 @@ bouncycastle = "1.84"
 tuweni = "2.4.2"
 spotless = "8.4.0"
 progressbar = "0.10.2"
-jgitver = "0.10.0-rc03"
+semver = "0.19.0"
 assertj = "3.27.7"
 teku = "25.12.0"
 
@@ -27,4 +27,4 @@ teku-bls = {module = "tech.pegasys.teku.internal:bls", version.ref = "teku" }
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-jgitver = { id = "fr.brouillard.oss.gradle.jgitver", version.ref = "jgitver" }
+semver = { id = "com.github.jmongard.git-semver-plugin", version.ref = "semver" }
