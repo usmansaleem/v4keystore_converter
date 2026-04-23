@@ -21,7 +21,7 @@ The encryption/decryption code is based on [Teku](https://github.com/Consensys/t
 
 # Usage:
 To use this program, either build it from source or download the pre-built binaries from the [releases](https://github.com/usmansaleem/v4keystore_converter/releases/latest) pages. 
-This program requires Java 21 or higher to build and run. The gradle build will attempt to download and use appropriate 
+This program requires Java 25 or higher to build and run. The gradle build will attempt to download and use appropriate 
 Java version if required.
 
 ## Build from source:
