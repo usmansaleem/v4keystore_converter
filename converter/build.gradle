@@ -2,7 +2,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     alias(libs.plugins.spotless)
-    alias(libs.plugins.jgitver)
+    alias(libs.plugins.semver)
 }
 
 repositories {
@@ -86,4 +86,4 @@ spotless {
     }
 }
 
-jgitver { nonQualifierBranches = "main,master" }
+version = semver.version
